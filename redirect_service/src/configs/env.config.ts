@@ -11,5 +11,5 @@ const requireEnv = (value:string|undefined,name:string)=>{
 
 export const env = {
   PORT:parseInt(requireEnv(process.env.PORT,"PORT")),
-  SHORTNER_SERIVCE_URL:requireEnv(process.env.SHORTNER_SERIVCE_URL,"SHORTNER_SERVICE_URL")
+  SHORTNER_SERIVCE_URL:requireEnv(process.env.SHORTNER_SERVICE_URL,"SHORTNER_SERVICE_URL")
 }

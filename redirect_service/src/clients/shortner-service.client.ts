@@ -10,5 +10,9 @@ export const getOriginalUrl = async (shortCode:string) : Promise<getOriginalUrlR
     }
   );
 
-  return response.data.originalUrl;
+  const res:getOriginalUrlResponse = {
+    originalUrl:response.data.originalUrl
+  }
+
+  return res;
 }
