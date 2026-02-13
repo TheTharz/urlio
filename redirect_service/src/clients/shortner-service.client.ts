@@ -1,13 +1,14 @@
 import axios from "axios"
 import { env } from "../configs/env.config"
+import { getOriginalUrlResponse } from "../dtos/get-original-url-reponse.dto";
 
-export const getOriginalUrl = async (shortCode:string) : Promise<string> => {
-  const response = await axios.post<string>(
+export const getOriginalUrl = async (shortCode:string) : Promise<getOriginalUrlResponse> => {
+  const response = await axios.post<getOriginalUrlResponse>(
     `${env.SHORTNER_SERIVCE_URL}/originalurl`,
     {
       shortCode
     }
   );
 
-  return response.data;
+  return response.data.originalUrl;
 }
