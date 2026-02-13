@@ -9,13 +9,13 @@ generator client {
   output   = "../src/generated/prisma"
 }
 
+datasource db {
+  provider = "postgresql"
+}
+
 model Url {
   id String @id @default(uuid())
   shortCode String @unique
   url String
   createdAt DateTime @default(now())
-}
-
-datasource db {
-  provider = "postgresql"
 }

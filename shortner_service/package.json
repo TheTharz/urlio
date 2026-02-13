@@ -4,25 +4,27 @@
   "description": "shortner service for the url shortner",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
     "build": "tsc",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "dev": "ts-node src/index.ts"
   },
   "author": "Tharindu Jayawardhana",
   "license": "ISC",
   "dependencies": {
+    "@prisma/adapter-pg": "^7.4.0",
     "@prisma/client": "^7.4.0",
-    "dotenv": "^17.2.4",
+    "dotenv": "^17.3.1",
     "express": "^5.2.1",
-    "prisma": "^7.4.0"
+    "pg": "^8.18.0"
   },
   "devDependencies": {
     "@types/express": "^5.0.6",
     "@types/node": "^25.2.3",
+    "@types/pg": "^8.16.0",
     "@typescript-eslint/eslint-plugin": "^8.55.0",
     "@typescript-eslint/parser": "^8.55.0",
     "eslint": "^9.39.2",
+    "prisma": "^7.4.0",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.9.3"
   }

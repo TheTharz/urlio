@@ -12,7 +12,7 @@ export class ShortnerController {
       await ShortnerService.createShortUrl(req,res);
     } catch (error:any) {
       console.error(error);
-      res.status(500).json({ message: "Internal Server Error" });
+      res.status(500).json({ message: "Internal Server Error" } as any);
     }
   }
 }
