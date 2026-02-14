@@ -3,6 +3,6 @@ import { RedirectController } from "../controllers/redirect.controller";
 
 const router = Router();
 
-router.get("/r/:shortCode",RedirectController.redirectToOriginal);
+router.get("/originalurl/:shortCode",RedirectController.redirectToOriginal);
 
 export default router;

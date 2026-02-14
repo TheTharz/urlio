@@ -4,6 +4,6 @@ import { ShortnerController } from "../controllers/shortner.controller";
 const router = Router();
 
 router.post("/create",ShortnerController.createShortUrl);
-router.post("/originalurl",ShortnerController.getOriginalUrl);
+router.get("/originalurl/:shortCode",ShortnerController.getOriginalUrl);
 
 export default router;

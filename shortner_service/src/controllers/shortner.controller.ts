@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import { CreateShortUrlRequestDTO } from "../dtos/CreateShortUrlRequest.dto";
 import { CreateShortUrlResponseDTO } from "../dtos/CreateShortUrlResponse.dto";
 import { ShortnerService } from "../services/shortner.service";
-import { GetRedirectUrlRequest } from "../dtos/GetRedirectUrlRequest.dto";
 import { GetRedirectUrlResponse } from "../dtos/GetRedirectUrlResponse.dto";
 
 export class ShortnerController {
@@ -19,11 +18,13 @@ export class ShortnerController {
   }
 
   public static getOriginalUrl = async (
-    req: Request<{},{},GetRedirectUrlRequest>,
-    res: Response<GetRedirectUrlResponse>
+    req: Request<{shortCode:string}>,
+    res: Response<GetRedirectUrlResponse | { message: string }>
   )=>{
     try {
-      await ShortnerService.getOriginalUrl(req,res);
+      const {shortCode} = req.params;
+      const result = await ShortnerService.getOriginalUrl(shortCode);
+      return res.status(200).json(result);
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: "Internal Server Error" } as any);

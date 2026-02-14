@@ -1,3 +1,3 @@
-export type getOriginalUrlResponse = {
+export type GetOriginalUrlResponse = {
   originalUrl:string
 }

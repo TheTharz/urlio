@@ -3,8 +3,7 @@ import { CreateShortUrlRequestDTO } from "../dtos/CreateShortUrlRequest.dto";
 import { generateShortCodeFromUrl } from "../utils/shortner.util";
 import { CreateShortUrlResponseDTO } from "../dtos/CreateShortUrlResponse.dto";
 import { env } from "../configs/env.config";
-import {prisma} from "../configs/database.config";
-import { GetRedirectUrlRequest } from "../dtos/GetRedirectUrlRequest.dto";
+import { prisma } from "../configs/database.config";
 import { GetRedirectUrlResponse } from "../dtos/GetRedirectUrlResponse.dto";
 export class ShortnerService {
 
@@ -27,8 +26,7 @@ export class ShortnerService {
     return res.status(200).json(response);
   }
 
-  public static getOriginalUrl = async (req:Request<{},{},GetRedirectUrlRequest>,res:Response<GetRedirectUrlResponse>) => {
-    const {shortCode} = req.body;
+  public static getOriginalUrl = async (shortCode:string): Promise<GetRedirectUrlResponse> => {
 
     const originalUrl = await prisma.url.findUnique({
       where : {shortCode}
@@ -42,6 +40,6 @@ export class ShortnerService {
       originalUrl : originalUrl.url
     }
 
-    return res.status(200).json(response);
+    return response;
   }
 }
