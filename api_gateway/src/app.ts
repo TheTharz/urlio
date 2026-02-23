@@ -2,6 +2,7 @@ import express, { Application, Request } from "express";
 import { createProxyMiddleware } from "http-proxy-middleware";
 import { env } from "./configs/env.config";
 import axios from "axios";
+import { RedirectParams } from "./dtos/redirect-params.dto";
 
 const app: Application = express();
 app.use(express.json());
@@ -11,12 +12,6 @@ const SERVICES = {
   shortener: env.SHORTNER_SERIVCE_URL,
   redirect: env.REDIRECT_SERIVCE_URL,
 };
-
-// === User-facing redirect with proxy ===
-// Type for request params
-interface RedirectParams {
-  shortCode: string;
-}
 
 app.use(
   "/r/:shortCode",
@@ -32,7 +27,7 @@ app.use(
   })
 );
 
-// === API v1 routes (shortener) ===
+// === API v1 routes ===
 const proxyRequest = async (req: any, res: any, targetUrl: string) => {
   try {
     const response = await axios({
