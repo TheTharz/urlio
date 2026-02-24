@@ -4,27 +4,46 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Debug Application",
+      "name": "Debug Shortner Service",
       "runtimeArgs": ["-r", "ts-node/register"],
-      "args": ["${workspaceFolder}/src/index.ts"],
-      "cwd": "${workspaceFolder}",
+      "args": ["${workspaceFolder}/shortner_service/src/index.ts"],
+      "cwd": "${workspaceFolder}/shortner_service",
       "env": {
         "NODE_ENV": "development"
       },
       "skipFiles": ["<node_internals>/**"],
       "console": "integratedTerminal",
-      "internalConsoleOptions": "neverOpen"
+      "internalConsoleOptions": "neverOpen",
+      "sourceMaps": true,
+      "envFile": "${workspaceFolder}/shortner_service/.env",
+      "outputCapture": "std",
+      "preLaunchTask": null
     },
     {
       "type": "node",
       "request": "launch",
-      "name": "Debug with nodemon",
-      "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev"],
+      "name": "Debug with Auto Restart",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["nodemon", "--exec", "node", "--inspect=9231", "-r", "ts-node/register", "src/index.ts"],
+      "cwd": "${workspaceFolder}/shortner_service",
       "skipFiles": ["<node_internals>/**"],
       "console": "integratedTerminal",
       "restart": true,
-      "internalConsoleOptions": "neverOpen"
+      "internalConsoleOptions": "neverOpen",
+      "sourceMaps": true,
+      "envFile": "${workspaceFolder}/shortner_service/.env",
+      "port": 9231
+    },
+    {
+      "type": "node",
+      "request": "attach",
+      "name": "Attach to Process",
+      "port": 9231,
+      "restart": true,
+      "skipFiles": ["<node_internals>/**"],
+      "sourceMaps": true,
+      "localRoot": "${workspaceFolder}/shortner_service",
+      "remoteRoot": "${workspaceFolder}/shortner_service"
     }
   ]
 }

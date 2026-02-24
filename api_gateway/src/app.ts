@@ -1,11 +1,29 @@
-import express, { Application, Request } from "express";
+import express, { Application, Request, Response, NextFunction } from "express";
 import { createProxyMiddleware } from "http-proxy-middleware";
 import { env } from "./configs/env.config";
 import axios from "axios";
 import { RedirectParams } from "./dtos/redirect-params.dto";
+import cors from "cors";
+import { errorHandler } from "./middleware/errorHandler";
+import { ServerResponse } from "http";
 
 const app: Application = express();
 app.use(express.json());
+
+const allowedOrigins = ["http://localhost:3000"]
+
+app.use(cors(
+  {
+    origin : function(origin,callback){
+      if(!origin || allowedOrigins.includes(origin)){
+        callback(null,true);
+      }else{
+        callback(new Error("Not allowed by cors"))
+      }
+    },
+    credentials:true,
+  }
+))
 
 // Microservice base URLs
 const SERVICES = {
@@ -24,6 +42,21 @@ app.use(
       const shortCode = expressReq.params.shortCode;
       return `/originalurl/${shortCode}`;
     },
+    on: {
+      proxyReq: (proxyReq, req, res) => {
+        console.log(`[Proxy] ${req.method} ${req.url} -> ${proxyReq.path}`);
+      },
+      error: (err, req, res) => {
+        console.error("[Proxy Error]", err);
+        if (res instanceof ServerResponse) {
+          res.writeHead(503, { "Content-Type": "application/json" });
+          res.end(JSON.stringify({ 
+            success: false, 
+            message: "Redirect service unavailable" 
+          }));
+        }
+      }
+    }
   })
 );
 
@@ -38,7 +71,15 @@ const proxyRequest = async (req: any, res: any, targetUrl: string) => {
     });
     res.status(response.status).json(response.data);
   } catch (err: any) {
-    res.status(err.response?.status || 500).json({ message: err.message });
+    // Forward the actual error response from the backend service
+    if (err.response) {
+      res.status(err.response.status).json(err.response.data);
+    } else {
+      res.status(503).json({ 
+        success: false, 
+        message: "Service unavailable" 
+      });
+    }
   }
 };
 
@@ -48,5 +89,8 @@ app.use("/api/v1/shorten", (req, res) => {
   const target = `${SERVICES.shortener}${pathWithoutPrefix}`;
   proxyRequest(req, res, target);
 });
+
+// Global error handler (must be last)
+app.use(errorHandler);
 
 export default app;

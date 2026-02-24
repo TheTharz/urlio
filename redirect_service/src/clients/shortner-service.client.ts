@@ -3,6 +3,7 @@ import { env } from "../configs/env.config"
 import { GetOriginalUrlResponse } from "../dtos/get-original-url-reponse.dto";
 import { httpClient } from "./http.client";
 import { AxiosError } from "axios";
+import { AppError } from "../errors/AppError";
 
 export const getOriginalUrl = async (shortCode:string) : Promise<GetOriginalUrlResponse | null> => {
   try {
@@ -12,14 +13,16 @@ export const getOriginalUrl = async (shortCode:string) : Promise<GetOriginalUrlR
 
     return response.data;
   } catch (error:any) {
-    if (error instanceof AxiosError) {
+    if (axios.isAxiosError(error)) {
       if (error.response?.status === 404) {
         return null;
       }
-
       console.error("Shortener service error:", error.response?.status);
     }
 
-    throw new Error("Shortener service unavailable");
+    throw new AppError(
+      error.response?.data?.message || "Shortener service unavailable",
+      error.response?.status || 503
+    );
   }
 }

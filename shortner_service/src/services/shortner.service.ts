@@ -1,14 +1,19 @@
 import { Request, Response } from "express";
 import { CreateShortUrlRequestDTO } from "../dtos/CreateShortUrlRequest.dto";
-import { generateShortCodeFromUrl } from "../utils/shortner.util";
+import { generateShortCodeFromUrl, isValidUrl } from "../utils/shortner.util";
 import { CreateShortUrlResponseDTO } from "../dtos/CreateShortUrlResponse.dto";
 import { env } from "../configs/env.config";
 import { prisma } from "../configs/database.config";
 import { GetRedirectUrlResponse } from "../dtos/GetRedirectUrlResponse.dto";
+import { AppError } from "../errors/AppError";
 export class ShortnerService {
 
   public static createShortUrl = async (req: Request<{},{},CreateShortUrlRequestDTO>, res: Response<CreateShortUrlResponseDTO>) => {
     const {url} = req.body;
+
+    if(!isValidUrl(url)){
+      throw new AppError("Invalid url",400);
+    }
 
     const shortCode = generateShortCodeFromUrl(url);
 
@@ -33,7 +38,7 @@ export class ShortnerService {
     })
 
     if(!originalUrl){
-      throw new Error('The url with shortcode given was not found in the database');
+      throw new AppError('URL not found', 404);
     }
 
     const response:GetRedirectUrlResponse = {

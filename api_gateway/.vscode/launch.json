@@ -4,27 +4,46 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Debug Application",
+      "name": "Debug API Gateway",
       "runtimeArgs": ["-r", "ts-node/register"],
-      "args": ["${workspaceFolder}/src/index.ts"],
-      "cwd": "${workspaceFolder}",
+      "args": ["${workspaceFolder}/api_gateway/src/index.ts"],
+      "cwd": "${workspaceFolder}/api_gateway",
       "env": {
         "NODE_ENV": "development"
       },
       "skipFiles": ["<node_internals>/**"],
       "console": "integratedTerminal",
-      "internalConsoleOptions": "neverOpen"
+      "internalConsoleOptions": "neverOpen",
+      "sourceMaps": true,
+      "envFile": "${workspaceFolder}/api_gateway/.env",
+      "outputCapture": "std",
+      "preLaunchTask": null
     },
     {
       "type": "node",
       "request": "launch",
-      "name": "Debug with nodemon",
-      "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev"],
+      "name": "Debug with Auto Restart",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["nodemon", "--exec", "node", "--inspect=9229", "-r", "ts-node/register", "src/index.ts"],
+      "cwd": "${workspaceFolder}/api_gateway",
       "skipFiles": ["<node_internals>/**"],
       "console": "integratedTerminal",
       "restart": true,
-      "internalConsoleOptions": "neverOpen"
+      "internalConsoleOptions": "neverOpen",
+      "sourceMaps": true,
+      "envFile": "${workspaceFolder}/api_gateway/.env",
+      "port": 9229
+    },
+    {
+      "type": "node",
+      "request": "attach",
+      "name": "Attach to Process",
+      "port": 9229,
+      "restart": true,
+      "skipFiles": ["<node_internals>/**"],
+      "sourceMaps": true,
+      "localRoot": "${workspaceFolder}/api_gateway",
+      "remoteRoot": "${workspaceFolder}/api_gateway"
     }
   ]
 }

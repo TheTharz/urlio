@@ -4,27 +4,46 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Debug Application",
+      "name": "Debug Redirect Service",
       "runtimeArgs": ["-r", "ts-node/register"],
-      "args": ["${workspaceFolder}/src/index.ts"],
-      "cwd": "${workspaceFolder}",
+      "args": ["${workspaceFolder}/redirect_service/src/index.ts"],
+      "cwd": "${workspaceFolder}/redirect_service",
       "env": {
         "NODE_ENV": "development"
       },
       "skipFiles": ["<node_internals>/**"],
       "console": "integratedTerminal",
-      "internalConsoleOptions": "neverOpen"
+      "internalConsoleOptions": "neverOpen",
+      "sourceMaps": true,
+      "envFile": "${workspaceFolder}/redirect_service/.env",
+      "outputCapture": "std",
+      "preLaunchTask": null
     },
     {
       "type": "node",
       "request": "launch",
-      "name": "Debug with nodemon",
-      "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev"],
+      "name": "Debug with Auto Restart",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["nodemon", "--exec", "node", "--inspect=9230", "-r", "ts-node/register", "src/index.ts"],
+      "cwd": "${workspaceFolder}/redirect_service",
       "skipFiles": ["<node_internals>/**"],
       "console": "integratedTerminal",
       "restart": true,
-      "internalConsoleOptions": "neverOpen"
+      "internalConsoleOptions": "neverOpen",
+      "sourceMaps": true,
+      "envFile": "${workspaceFolder}/redirect_service/.env",
+      "port": 9230
+    },
+    {
+      "type": "node",
+      "request": "attach",
+      "name": "Attach to Process",
+      "port": 9229,
+      "restart": true,
+      "skipFiles": ["<node_internals>/**"],
+      "sourceMaps": true,
+      "localRoot": "${workspaceFolder}/redirect_service",
+      "remoteRoot": "${workspaceFolder}/redirect_service"
     }
   ]
 }

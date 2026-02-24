@@ -1,3 +1,5 @@
+import validator from 'validator';
+
 export const generateShortCodeFromUrl = (url: string, length = 6): string => {
   // Combine URL and current timestamp
   const data = url + Date.now().toString();
@@ -21,3 +23,7 @@ export const generateShortCodeFromUrl = (url: string, length = 6): string => {
 
   return shortCode;
 };
+
+export const isValidUrl = (url:string) : boolean => {
+  return validator.isURL(url,{protocols: ["http","https"],require_protocol:true})
+}

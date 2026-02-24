@@ -6,7 +6,9 @@
   "scripts": {
     "build": "tsc",
     "start": "node dist/index.js",
-    "dev": "ts-node src/index.ts"
+    "dev": "ts-node src/index.ts",
+    "dev:debug": "nodemon --exec node --inspect=9231 -r ts-node/register src/index.ts",
+    "debug": "node --inspect=9231 -r ts-node/register src/index.ts"
   },
   "author": "Tharindu Jayawardhana",
   "license": "ISC",
@@ -16,12 +18,14 @@
     "dotenv": "^17.3.1",
     "express": "^5.2.1",
     "nodemon": "^3.1.14",
-    "pg": "^8.18.0"
+    "pg": "^8.18.0",
+    "validator": "^13.15.26"
   },
   "devDependencies": {
     "@types/express": "^5.0.6",
     "@types/node": "^25.2.3",
     "@types/pg": "^8.16.0",
+    "@types/validator": "^13.15.10",
     "@typescript-eslint/eslint-plugin": "^8.55.0",
     "@typescript-eslint/parser": "^8.55.0",
     "eslint": "^9.39.2",
