@@ -14,14 +14,14 @@ const allowedOrigins = ["http://localhost:3000"]
 
 app.use(cors(
   {
-    origin : function(origin,callback){
-      if(!origin || allowedOrigins.includes(origin)){
-        callback(null,true);
-      }else{
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
         callback(new Error("Not allowed by cors"))
       }
     },
-    credentials:true,
+    credentials: true,
   }
 ))
 
@@ -29,6 +29,7 @@ app.use(cors(
 const SERVICES = {
   shortener: env.SHORTNER_SERIVCE_URL,
   redirect: env.REDIRECT_SERIVCE_URL,
+  analytics: env.ANALYTICS_SERVICE_URL
 };
 
 app.use(
@@ -50,9 +51,9 @@ app.use(
         console.error("[Proxy Error]", err);
         if (res instanceof ServerResponse) {
           res.writeHead(503, { "Content-Type": "application/json" });
-          res.end(JSON.stringify({ 
-            success: false, 
-            message: "Redirect service unavailable" 
+          res.end(JSON.stringify({
+            success: false,
+            message: "Redirect service unavailable"
           }));
         }
       }
@@ -75,9 +76,9 @@ const proxyRequest = async (req: any, res: any, targetUrl: string) => {
     if (err.response) {
       res.status(err.response.status).json(err.response.data);
     } else {
-      res.status(503).json({ 
-        success: false, 
-        message: "Service unavailable" 
+      res.status(503).json({
+        success: false,
+        message: "Service unavailable"
       });
     }
   }
@@ -87,6 +88,11 @@ app.use("/api/v1/shorten", (req, res) => {
   let pathWithoutPrefix = req.originalUrl.replace(/^\/api\/v1\/shorten/, "");
   if (pathWithoutPrefix === "") pathWithoutPrefix = "/";
   const target = `${SERVICES.shortener}${pathWithoutPrefix}`;
+  proxyRequest(req, res, target);
+});
+
+app.use("/api/v1/analytics", (req, res) => {
+  const target = `${SERVICES.analytics}${req.originalUrl}`;
   proxyRequest(req, res, target);
 });
 

@@ -6,26 +6,39 @@ import { GetRedirectUrlResponse } from "../dtos/GetRedirectUrlResponse.dto";
 
 export class ShortnerController {
   public static createShortUrl = async (
-    req: Request<{},{},CreateShortUrlRequestDTO>,
+    req: Request<{}, {}, CreateShortUrlRequestDTO>,
     res: Response<CreateShortUrlResponseDTO>,
     next: NextFunction
-  )=>{
+  ) => {
     try {
-      await ShortnerService.createShortUrl(req,res);
-    } catch (error:any) {
+      await ShortnerService.createShortUrl(req, res);
+    } catch (error: any) {
       next(error);
     }
   }
 
   public static getOriginalUrl = async (
-    req: Request<{shortCode:string}>,
+    req: Request<{ shortCode: string }>,
     res: Response<GetRedirectUrlResponse | { message: string }>,
     next: NextFunction
-  )=>{
+  ) => {
     try {
-      const {shortCode} = req.params;
+      const { shortCode } = req.params;
       const result = await ShortnerService.getOriginalUrl(shortCode);
       return res.status(200).json(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  public static getAllUrls = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const result = await ShortnerService.getAllUrls();
+      return res.status(200).json({ success: true, data: result });
     } catch (error) {
       next(error);
     }

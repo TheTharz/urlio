@@ -10,39 +10,39 @@ import redisClient from "../configs/redis.config";
 import { logger } from "../configs/logger.config";
 export class ShortnerService {
 
-  public static createShortUrl = async (req: Request<{},{},CreateShortUrlRequestDTO>, res: Response<CreateShortUrlResponseDTO>) => {
-    const {url} = req.body;
+  public static createShortUrl = async (req: Request<{}, {}, CreateShortUrlRequestDTO>, res: Response<CreateShortUrlResponseDTO>) => {
+    const { url } = req.body;
 
-    if(!isValidUrl(url)){
-      throw new AppError("Invalid url",400);
+    if (!isValidUrl(url)) {
+      throw new AppError("Invalid url", 400);
     }
 
     const shortCode = generateShortCodeFromUrl(url);
 
-    const response:CreateShortUrlResponseDTO = {
+    const response: CreateShortUrlResponseDTO = {
       shortUrl: `${env.BASE_URL}/r/${shortCode}`
     }
 
     const shortUrl = await prisma.url.create({
-      data : {
-        shortCode : shortCode,
-        url : url
+      data: {
+        shortCode: shortCode,
+        url: url
       }
     })
 
     return res.status(200).json(response);
   }
 
-  public static getOriginalUrl = async (shortCode:string): Promise<GetRedirectUrlResponse> => {
+  public static getOriginalUrl = async (shortCode: string): Promise<GetRedirectUrlResponse> => {
 
     try {
       // Check in Redis cache
       const cachedOriginalUrl = await redisClient.get(shortCode);
 
-      if(cachedOriginalUrl){
+      if (cachedOriginalUrl) {
         logger.info({ shortCode }, 'Cache hit');
         return {
-          originalUrl : cachedOriginalUrl
+          originalUrl: cachedOriginalUrl
         };
       }
     } catch (error) {
@@ -54,10 +54,10 @@ export class ShortnerService {
 
     // If not in cache, get from database
     const originalUrl = await prisma.url.findUnique({
-      where : {shortCode}
+      where: { shortCode }
     })
 
-    if(!originalUrl){
+    if (!originalUrl) {
       throw new AppError('URL not found', 404);
     }
 
@@ -69,10 +69,20 @@ export class ShortnerService {
       // Continue even if caching fails
     }
 
-    const response:GetRedirectUrlResponse = {
-      originalUrl : originalUrl.url
+    const response: GetRedirectUrlResponse = {
+      originalUrl: originalUrl.url
     }
 
     return response;
+  }
+
+  public static getAllUrls = async () => {
+    const urls = await prisma.url.findMany({
+      orderBy: {
+        createdAt: 'desc'
+      }
+    });
+
+    return urls;
   }
 }
