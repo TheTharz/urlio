@@ -18,6 +18,12 @@ export default function AnalyticsDashboard() {
     useEffect(() => {
         if (!shortCode) return;
 
+        const token = localStorage.getItem("token");
+        if (!token) {
+            router.push("/login");
+            return;
+        }
+
         const fetchAnalytics = async () => {
             try {
                 setLoading(true);

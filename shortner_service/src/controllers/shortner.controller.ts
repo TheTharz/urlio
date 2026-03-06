@@ -37,7 +37,8 @@ export class ShortnerController {
     next: NextFunction
   ) => {
     try {
-      const result = await ShortnerService.getAllUrls();
+      const userId = req.headers["x-user-id"] as string;
+      const result = await ShortnerService.getAllUrls(userId);
       return res.status(200).json({ success: true, data: result });
     } catch (error) {
       next(error);

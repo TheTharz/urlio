@@ -4,13 +4,21 @@ import { useState, useEffect } from "react";
 import { showSuccess, showError, toastMessages } from "@/lib/toast";
 import Link from "next/link";
 
+import { useRouter } from "next/navigation";
+
 export default function DashboardPage() {
+    const router = useRouter();
     const [recentLinks, setRecentLinks] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            router.push("/login");
+            return;
+        }
         fetchRecentLinks();
-    }, []);
+    }, [router]);
 
     const fetchRecentLinks = async () => {
         try {

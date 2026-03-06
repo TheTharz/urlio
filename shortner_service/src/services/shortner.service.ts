@@ -12,6 +12,11 @@ export class ShortnerService {
 
   public static createShortUrl = async (req: Request<{}, {}, CreateShortUrlRequestDTO>, res: Response<CreateShortUrlResponseDTO>) => {
     const { url } = req.body;
+    const userId = req.headers["x-user-id"] as string;
+
+    if (!userId) {
+      throw new AppError("Unauthorized: Missing user context", 401);
+    }
 
     if (!isValidUrl(url)) {
       throw new AppError("Invalid url", 400);
@@ -26,7 +31,8 @@ export class ShortnerService {
     const shortUrl = await prisma.url.create({
       data: {
         shortCode: shortCode,
-        url: url
+        url: url,
+        userId: userId
       }
     })
 
@@ -76,8 +82,15 @@ export class ShortnerService {
     return response;
   }
 
-  public static getAllUrls = async () => {
+  public static getAllUrls = async (userId: string) => {
+    if (!userId) {
+      throw new AppError("Unauthorized: Missing user context", 401);
+    }
+
     const urls = await prisma.url.findMany({
+      where: {
+        userId: userId
+      },
       orderBy: {
         createdAt: 'desc'
       }

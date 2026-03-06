@@ -1,0 +1,9 @@
+
+> shortner_service@1.0.0 dev
+> ts-node src/index.ts
+
+[dotenv@17.3.1] injecting env (7) from .env -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+[15:11:49 UTC] [32mINFO[39m: [36mServer is running[39m
+    [35mport[39m: 5000
+[15:11:49 UTC] [32mINFO[39m: [36mRedis client is ready[39m
+[15:11:49 UTC] [32mINFO[39m: [36mSuccessfully connected to Redis[39m

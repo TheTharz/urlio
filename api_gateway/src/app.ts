@@ -6,6 +6,7 @@ import { RedirectParams } from "./dtos/redirect-params.dto";
 import cors from "cors";
 import { errorHandler } from "./middleware/errorHandler";
 import { ServerResponse } from "http";
+import { authMiddleware } from "./middleware/auth";
 
 const app: Application = express();
 app.use(express.json());
@@ -29,7 +30,8 @@ app.use(cors(
 const SERVICES = {
   shortener: env.SHORTNER_SERIVCE_URL,
   redirect: env.REDIRECT_SERIVCE_URL,
-  analytics: env.ANALYTICS_SERVICE_URL
+  analytics: env.ANALYTICS_SERVICE_URL,
+  auth: env.AUTH_SERVICE_URL
 };
 
 app.use(
@@ -64,11 +66,16 @@ app.use(
 // === API v1 routes ===
 const proxyRequest = async (req: any, res: any, targetUrl: string) => {
   try {
+    console.log(`[Proxy Request] to ${targetUrl} with headers:`, JSON.stringify(req.headers));
     const response = await axios({
       method: req.method,
       url: targetUrl,
       data: req.body,
       params: req.query,
+      headers: {
+        ...req.headers,
+        host: undefined, // Let axios set the host for the target URL
+      }
     });
     res.status(response.status).json(response.data);
   } catch (err: any) {
@@ -84,15 +91,20 @@ const proxyRequest = async (req: any, res: any, targetUrl: string) => {
   }
 };
 
-app.use("/api/v1/shorten", (req, res) => {
+app.use("/api/v1/shorten", authMiddleware, (req, res) => {
   let pathWithoutPrefix = req.originalUrl.replace(/^\/api\/v1\/shorten/, "");
   if (pathWithoutPrefix === "") pathWithoutPrefix = "/";
   const target = `${SERVICES.shortener}${pathWithoutPrefix}`;
   proxyRequest(req, res, target);
 });
 
-app.use("/api/v1/analytics", (req, res) => {
+app.use("/api/v1/analytics", authMiddleware, (req, res) => {
   const target = `${SERVICES.analytics}${req.originalUrl}`;
+  proxyRequest(req, res, target);
+});
+
+app.use("/api/v1/auth", (req, res) => {
+  const target = `${SERVICES.auth}${req.originalUrl}`;
   proxyRequest(req, res, target);
 });
 
