@@ -1,0 +1,22 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model ClickEvent {
+  id        String   @id @default(uuid())
+  shortCode String   
+  ipAddress String?
+  country   String?
+  city      String?
+  userAgent String?
+  browser   String?
+  os        String?
+  device    String?
+  referer   String?
+  timestamp DateTime @default(now())
+}

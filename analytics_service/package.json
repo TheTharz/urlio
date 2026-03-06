@@ -1,0 +1,40 @@
+{
+  "name": "analytics_service",
+  "version": "1.0.0",
+  "description": "Analytics service for the url shortner application",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "ts-node src/index.ts",
+    "dev:debug": "nodemon --exec node --inspect=9230 -r ts-node/register src/index.ts",
+    "debug": "node --inspect=9229 -r ts-node/register src/index.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TheTharz/urlio.git"
+  },
+  "author": "Tharindu Jayawardhana",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/TheTharz/urlio/issues"
+  },
+  "homepage": "https://github.com/TheTharz/urlio#readme",
+  "dependencies": {
+    "@prisma/adapter-pg": "^7.4.2",
+    "@prisma/client": "^7.4.2",
+    "express": "^5.2.1",
+    "pg": "^8.20.0"
+  },
+  "devDependencies": {
+    "@types/dotenv": "^6.1.1",
+    "@types/express": "^5.0.6",
+    "@types/node": "^25.3.3",
+    "@types/pg": "^8.18.0",
+    "dotenv": "^17.3.1",
+    "nodemon": "^3.1.14",
+    "prisma": "^7.4.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  }
+}

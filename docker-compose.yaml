@@ -13,6 +13,55 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
+  shortner_redis:
+    image: redis:7
+    container_name: shortner_redis
+    restart: always
+    ports:
+      - "6379:6379"
+    command: >
+      redis-server --requirepass StrongRedisPassword123 --maxmemory 256mb --maxmemory-policy allkeys-lru --appendonly yes
+    volumes:
+      - redis_data:/data
+    deploy:
+      resources:
+        limits:
+          memory: 300m
+
+  analytics_db:
+    image: postgres:15
+    container_name: analytics_db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: analyticsdb
+    ports:
+      - "5433:5432"
+    volumes:
+      - analytics_postgres_data:/var/lib/postgresql/data
+
+  analytics_redis:
+    image: redis:7
+    container_name: analytics_redis
+    restart: always
+    ports:
+      - "6380:6379"
+    command: >
+      redis-server --requirepass StrongRedisPassword123 --maxmemory 256mb --maxmemory-policy allkeys-lru --appendonly yes
+    volumes:
+      - analytics_redis_data:/data
+    deploy:
+      resources:
+        limits:
+          memory: 300m
+
 volumes:
   postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  analytics_postgres_data:
+    driver: local
+  analytics_redis_data:
     driver: local
